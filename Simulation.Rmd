@@ -1,0 +1,65 @@
+---
+title: "Simualtion of data"
+author: "Isa Baghirov"
+date: "01 02 2021"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Simulation of exponentials and analysis of simulated data.
+
+The code above will simulate 40 exponential distributions with 1000 values. The main idea is to show that the means of exponential distributions are normally distributed.
+```{r}
+lambda <- 0.2
+simulation <- matrix(rexp(1000*40, lambda), nrow = 1000, ncol = 40)
+mean_dist <- apply(simulation, 1, mean)
+hist(mean_dist, breaks = 30, 
+     main = "1000 averages of 40 exponentials in random manner", 
+     xlab = "Means", 
+     ylab = "Frequency of means", 
+     col = "blue")
+abline(v = 1/lambda, lty = 1, lwd = 3, col = "red")
+legend("topright", lty = 1, lwd = 3, col = "red", legend = "theoretical mean")
+```
+
+
+The variance is also normally distributed centered on the theoretical variance.
+```{r}
+var_dist <- apply(simulation, 1, var)
+hist(var_dist, breaks = 30, main = "1000 variances of 40 exponentials", xlab = "Variances", ylab = "Frequency of variance", col = "blue")
+abline(v = (1/lambda)^2, lty = 1, lwd = 5, col = "red")
+legend("topright", lty = 1, lwd = 5, col = "red", legend = "theoretical variance")
+```
+
+
+
+The histogram is the distribution of the all exponential distributions with lambda equals to 0.2
+```{r}
+hist(simulation, breaks = 30, main = "Distribution with lambda=0.2", xlab = "Exponentials", col = "blue")
+```
+
+
+
+The histogram is the distribution of 1000 averages of 40 random exponentials.
+```{r}
+hist(mean_dist, breaks = 30, main = "Distribution of 1000 averages of 40 exponentials", xlab = "Value of means", ylab = "Frequency of means", col = "blue")
+```
+
+
+
+
+The histogram is a normal distribution with mean and standard deviation equal to the previous histogram’s.
+```{r}
+simNorm <- rnorm(1000, mean = mean(mean_dist), sd = sd(mean_dist))
+hist(simNorm, breaks = 30, main = "Normal distribution with theoretical mean and sd of the exponentials", xlab = "Normal variables", col = "blue")
+```
+
+
+
+Comparing the first with the second histogram, we can see the distribution becomes normal as the means were taken from each groups, aligning to the central limit theorem. Comparing the second and the third histogram, we see the distribution of the means is close to a normal distribution with the same mean and standard deviation.
