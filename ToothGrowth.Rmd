@@ -1,0 +1,70 @@
+---
+title: "Tooth"
+author: "Isa Baghirov"
+date: "01 02 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analysis of Tooth Growth data in R
+
+
+
+```{r}
+library(ggplot2)
+library(datasets)
+str(ToothGrowth)
+summary(ToothGrowth)
+```
+```{r}
+qplot(dose ,len ,data = ToothGrowth, 
+      col = supp, 
+      main = "Length Growth by supplement type and dosage", 
+      xlab = "Dosage", 
+      ylab = "Length Growth")
+```
+```{r}
+qplot(supp, len, data = ToothGrowth, 
+      facets = ~dose, 
+      main = "Tooth growth of guinea pigs by supplement type and dosage (mg)", 
+      xlab = "Supplement type", 
+      ylab = "Tooth length") + 
+        geom_boxplot(aes(fill = supp))
+```
+The null hypothesis is VC supplementary growth is more than OJ supplementary growth.
+```{r}
+VC <- ToothGrowth$len[ToothGrowth$supp == "VC"]
+OJ<- ToothGrowth$len[ToothGrowth$supp == "OJ"]
+t.test(VC, OJ, 
+       alternative = "greater", # testing hypothesis if Vc is greater than VC
+       paired = FALSE, # the data point are not paired with each other
+       var.equal = FALSE, # the variances are not equal
+       conf.level = 0.98) # a 98% confidence interval is taken as the default if nothing else is defined
+```
+The P-value is 0.9697, so null hypothesis is true.
+
+The null hypothesis is that tooth growth for 0.5 is less than 1.
+```{r}
+d0.5 <- ToothGrowth$len[ToothGrowth$dose == "0.5"]
+d1   <- ToothGrowth$len[ToothGrowth$dose == "1"]
+d2   <- ToothGrowth$len[ToothGrowth$dose == "2"]
+t.test(d0.5, d1, alternative = "greater", # is the alternative that d1 has a greater mean than d0.5 
+       paired = FALSE,
+       var.equal = FALSE,
+       conf.level = 0.98)
+```
+
+The P-Value is 1, so the null hypothesis is true.
+
+The null hypothesis is that for d1 growth is less than for d2
+```{r}
+t.test(d1, d2, 
+       alternative = "greater", # is the alternative that dose_1 has a greater mean than dose_2
+       paired = FALSE, 
+       var.equal = FALSE, 
+       conf.level = 0.98)
+```
+The P-value is also 1, so the null hypothesis is also true
